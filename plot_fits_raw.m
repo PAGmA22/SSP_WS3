@@ -8,15 +8,16 @@ show_non_vulcanic       = true;         % true/false
 colormapName            = 'parula';     % e.g., 'gray','parula','hot'
 clim                    = [NaN NaN];    % e.g., [0 1]; use [NaN NaN] for auto
 
+data_plot = data(8:end,:);
+
+hasCenter    = ismember('image_center_xy', data_plot.Properties.VariableNames);
+hasBrightest = ismember('brightest_point_xy', data_plot.Properties.VariableNames);
+hasnonvol    = ismember('nonvolcanic_point_xy', data_plot.Properties.VariableNames);
 
 
-hasCenter    = ismember('image_center_xy', data.Properties.VariableNames);
-hasBrightest = ismember('brightest_point_xy', data.Properties.VariableNames);
-hasnonvol    = ismember('nonvolcanic_point_xy', data.Properties.VariableNames);
 
-
-for i = 1:height(data)
-    fpath = string(data.path(i));
+for i = 1:height(data_plot)
+    fpath = string(data_plot.path(i));
     if strlength(fpath) == 0
         warning('Row %d: empty path, skipping.', i); 
         continue
@@ -45,7 +46,7 @@ for i = 1:height(data)
         end
     end
 
-    figName = sprintf('%s | %s', string(data.time(i)), string(data.wavelength(i)));
+    figName = sprintf('%s | %s', string(data_plot.time(i)), string(data_plot.wavelength(i)));
     figure('Name', figName, 'NumberTitle', 'off');
 
     imagesc(img);
@@ -65,7 +66,7 @@ for i = 1:height(data)
         if ~hasCenter
             warning('Row %d: "image_center_xy" not available; center not plotted.', i);
         else
-            cxy = data.image_center_xy(i,:);
+            cxy = data_plot.image_center_xy(i,:);
             if isnumeric(cxy) && numel(cxy)==2 && all(isfinite(cxy))
                 h1 = plot(cxy(1), cxy(2), 'y+', 'MarkerSize', 12, 'LineWidth', 1.5);
                 legHandles(end+1) = h1; %#ok<AGROW>
@@ -81,7 +82,7 @@ for i = 1:height(data)
         if ~hasnonvol
             warning('Row %d: "non vol position" not available; point not plotted.', i);
         else
-            nvxy = data.nonvolcanic_point_xy(i,:);
+            nvxy = data_plot.nonvolcanic_point_xy(i,:);
             if isnumeric(nvxy) && numel(nvxy)==2 && all(isfinite(nvxy))
                 h1 = plot(nvxy(1), nvxy(2), 'b+', 'MarkerSize', 12, 'LineWidth', 1.5);
                 legHandles(end+1) = h1; %#ok<AGROW>
@@ -97,7 +98,7 @@ for i = 1:height(data)
         if ~hasBrightest
             warning('Row %d: "brightest_point_xy" not available; brightest not plotted.', i);
         else
-            bxy = data.brightest_point_xy(i,:);
+            bxy = data_plot.brightest_point_xy(i,:);
             if isnumeric(bxy) && numel(bxy)==2 && all(isfinite(bxy))
                 h2 = plot(bxy(1), bxy(2), 'mo', 'MarkerSize', 7, 'LineWidth', 1.5);
                 legHandles(end+1) = h2; %#ok<AGROW>
