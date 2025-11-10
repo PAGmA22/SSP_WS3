@@ -11,10 +11,9 @@ function T = fit_planck_from_arrays(lambda_um, P)
 %
 %   Behavior
 %     - Fits y(lambda) ≈ α * B_lambda(T).
-%     - Plots the data points and the fitted curve in a new figure.
-%     - Figure x-axis spans 0–5 µm.
-%     - Also overlays dotted yellow reference curves for T = 1000, 2000, 3000, 4000 K.
-%     - Returns T (temperature).  α is not returned.
+%     - Plot 1: data + fitted curve over 0–5 µm, with dotted refs at 1000,2000,3000,4000 K.
+%     - Plot 2: data + fitted curve only, axes limited to the data's wavelength & intensity range.
+%     - Returns T (temperature). α is not returned.
 
     % ---- sanity checks
     if nargin < 2
@@ -69,7 +68,9 @@ function T = fit_planck_from_arrays(lambda_um, P)
     T     = p(1);
     alpha = p(2);
 
-    % ---- plot data and fitted curve (0 .. 5 µm)
+    % =========================
+    % Plot 1: 0–5 µm + refs
+    % =========================
     figure('Color','w'); hold on; box on; grid on;
 
     % scatter data
@@ -95,6 +96,38 @@ function T = fit_planck_from_arrays(lambda_um, P)
     title('Scaled Planck fit (with reference temperatures)');
     xlim([0 5]);
     legend('Location','best');
+
+    % =========================
+    % Plot 2: limited to data range, no refs
+    % =========================
+    figure('Color','w'); hold on; box on; grid on;
+
+    % scatter data
+    scatter(lambda_um, P, 60, 'filled', 'DisplayName','data');
+
+    % wavelength grid only over the observed span
+    xmin = min(lambda_um); xmax = max(lambda_um);
+    if xmin == xmax, xmin = max(1e-3, xmin-1e-3); xmax = xmax+1e-3; end
+    wgrid_zoom = linspace(xmin, xmax, 600).';
+
+    % fitted curve only over data range
+    plot(wgrid_zoom, model([T, alpha], wgrid_zoom), 'LineWidth', 1.8, ...
+        'DisplayName', sprintf('fit: T = %.0f K', T));
+
+    % axis limits: match the spread of the data points
+    ymin = min(P); ymax = max(P);
+    if ymin == ymax
+        pad = max(1, abs(ymin))*0.05;
+        ymin = ymin - pad; ymax = ymax + pad;
+    end
+    xlim([xmin xmax]);
+    ylim([ymin ymax]);
+
+    xlabel('Wavelength [\mum]');
+    ylabel('Brightness [arb.]');
+    title('Scaled Planck fit (data-range view)');
+    legend('Location','best');
+
 end
 
 % --------- helper: scaled Planck function per wavelength ---------
