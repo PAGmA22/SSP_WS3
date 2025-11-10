@@ -41,3 +41,6 @@ codegen/
 
 # FITS data
 *.fits
+
+# Export Folder
+Export/
