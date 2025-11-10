@@ -10,7 +10,7 @@ files = [
     "C:\Users\gabri\Documents\SolarSystemPhysics\WS3\spectral_files\KeckMs_15jan12_ms7_GW.fits"
     "C:\Users\gabri\Documents\SolarSystemPhysics\WS3\spectral_files\KeckPAH_15jan12_pah19_GW.fits"
 ];
-
+%{
 % --- Start Kernels ---
 addpath("C:\Users\gabri\Documents\SolarSystemPhysics\WS1");
 start_kernals;
@@ -69,3 +69,7 @@ fitsData = sortrows(fitsData, "wavelength", "ascend");
 
 % --- Display results nicely ---
 disp(fitsData);
+%}
+for i = 1:7
+    fitsdisp(files(i),Mode="full")
+end

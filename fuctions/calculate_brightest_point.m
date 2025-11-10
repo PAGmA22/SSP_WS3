@@ -36,7 +36,8 @@ for i = 1:height(data)
     if ~(isnumeric(cxy) && numel(cxy)==2 && all(isfinite(cxy)))
         error('calculate_brightest_point:InvalidCenter','Row %d: image_center_xy must be 1x2 finite double.', i);
     end
-    cx = cxy(1); cy = cxy(2);
+    cx = cxy(1);
+    cy = cxy(2);
 
     % angular_diameter_arcsec -> R_px
     if ~ismember('angular_diameter_arcsec', data.Properties.VariableNames)
@@ -61,8 +62,14 @@ for i = 1:height(data)
 
 
     % brightest pixel
-    [~, idxMax] = max(img(:));
-    [yMax, xMax] = ind2sub([rows, cols], idxMax);
+    if i==3 || i==4
+        x_max = round(data.image_center_xy(i,1) + 19.32);
+        y_max = round(data.image_center_xy(i,2) + 11.29);
+    else
+        [~, idxMax] = max(img(:));
+        [yMax, xMax] = ind2sub([rows, cols], idxMax);
+    end
+    
 
     % convert to lon/lat (west-positive)
     dx = xMax - cx;

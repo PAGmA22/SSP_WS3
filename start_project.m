@@ -1,6 +1,15 @@
 % Gabriel Spethmann
 % Workshop 3 Solar System Physics
 
+
+%% Add Path
+
+% add paths
+addpath("C:\Users\gabri\Documents\SolarSystemPhysics\WS1");
+addpath("C:\Users\gabri\Documents\SolarSystemPhysics\WS3");
+addpath("C:\Users\gabri\Documents\SolarSystemPhysics\WS3\fuctions\");
+
+
 %% Start all needed Kernals
 
 % This loads all kernals from WS1
@@ -9,7 +18,9 @@
 % avaliable to you
 start_kernals
 
+
 %% Initialize the main data file as table
+clear data
 files = [
     % Spectral data
     "C:\Users\gabri\Documents\SolarSystemPhysics\WS3\spectral_files\KeckBra_15jan12_bra10_GW.fits"
@@ -36,19 +47,27 @@ data = table('Size',[numel(files),1], ...
 
 data.path = files;
 
+
+%% All default operations to get the basic structure
+
 data = collect_fits_data(data);
 data = collect_spice_data(data);
 data = calculate_center_of_planet(data);
 data = calculate_brightest_point(data);
 
+% get brightness values
+data = calculate_volcano_brightness(data,8,10);
+data = calculate_nonvolcanic_brightness(data,5,4);
 
-% Convert the time column to datetime
-data.time = datetime(data.time, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
+% seperate spectral from temporal data
+spectralData = data(1:7, :) % Extract spectral data
+spectralData = sortrows(spectralData, 'wavelength', 'ascend')
+temporalData = data(8:end, :); % Extract temporal data
+temporalData = sortrows(temporalData, 'time','ascend')
 
-% Sort ascending by time
-data = sortrows(data, 'time');
+% fit plank for spectral data
+temp_vul = fit_planck_from_arrays(spectralData.wavelength,spectralData.volcano_brightness*100)
+temp_nonvul = fit_planck_from_arrays(spectralData.wavelength,spectralData.nonvolcanic_brightness*100)
 
-data.time
 
-X = data.brightest_point_xy - data.image_center_xy;
-X(4:8,:)
+

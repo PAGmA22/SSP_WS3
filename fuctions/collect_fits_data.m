@@ -25,12 +25,18 @@ function return_data = collect_fits_data(data)
     
     
         try
-            data.wavelength(i) = double(string(getFitsKeywordValue(data.path(i), "TARGWAVE")));
+            data.wavelength(i) = double(string(getFitsKeywordValue(data.path(i), "CENWAVE")));
         catch
             data.wavelength(i) = "<missing>";
         end
     end
 
+%% format time
+
+% Convert the time column to datetime
+data.time = datetime(data.time, 'InputFormat', 'yyyy-MM-dd HH:mm:ss.SSS');
+
+    
 %% return data
 return_data = data;
 
