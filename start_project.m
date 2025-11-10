@@ -56,18 +56,23 @@ data = calculate_center_of_planet(data);
 data = calculate_brightest_point(data);
 
 % get brightness values
-data = calculate_volcano_brightness(data,8,10);
-data = calculate_nonvolcanic_brightness(data,5,4);
+data = calculate_volcano_brightness(data,6,10);
+
+data = get_nonvulcanic_point(data,1,15);
+data = calculate_nonvolcanic_brightness(data,8);
 
 % seperate spectral from temporal data
-spectralData = data(1:7, :) % Extract spectral data
-spectralData = sortrows(spectralData, 'wavelength', 'ascend')
+spectralData = data(1:7, :); % Extract spectral data
+spectralData = sortrows(spectralData, 'wavelength', 'ascend');
 temporalData = data(8:end, :); % Extract temporal data
-temporalData = sortrows(temporalData, 'time','ascend')
+temporalData = sortrows(temporalData, 'time','ascend');
 
 % fit plank for spectral data
-temp_vul = fit_planck_from_arrays(spectralData.wavelength,spectralData.volcano_brightness*100)
-temp_nonvul = fit_planck_from_arrays(spectralData.wavelength,spectralData.nonvolcanic_brightness*100)
+temp_vul = fit_planck_from_arrays(spectralData.wavelength,spectralData.volcano_brightness);
+temp_nonvul = fit_planck_from_arrays(spectralData.wavelength,spectralData.nonvolcanic_brightness);
+
+spectralData = removevars(spectralData,"path");
+spectralData;
 
 
 
