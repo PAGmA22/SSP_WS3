@@ -1,31 +1,19 @@
 %% PLOT FITS IMAGES (script)
 
 % --- Configuration ---
-normalize      = false;        % true/false
-show_center    = true;         % true/false
-show_brightest = true;         % true/false
-colormapName   = 'parula';     % e.g., 'gray','parula','hot'
-clim           = [NaN NaN];    % e.g., [0 1]; use [NaN NaN] for auto
+normalize               = false;        % true/false
+show_center             = true;         % true/false
+show_brightest          = true;         % true/false
+show_non_vulcanic       = true;         % true/false
+colormapName            = 'parula';     % e.g., 'gray','parula','hot'
+clim                    = [NaN NaN];    % e.g., [0 1]; use [NaN NaN] for auto
 
-% --- Choose data table ---
-if exist('fitsData','var') && istable(fitsData)
-    data = fitsData;
-elseif exist('data','var') && istable(data)
-    % use 'data' as is
-else
-    error('No table found. Provide table variable "fitsData" or "data".');
-end
 
-% --- Required columns ---
-req = {'path','time','wavelength'};
-for k = 1:numel(req)
-    if ~ismember(req{k}, data.Properties.VariableNames)
-        error('Missing required column "%s".', req{k});
-    end
-end
 
 hasCenter    = ismember('image_center_xy', data.Properties.VariableNames);
 hasBrightest = ismember('brightest_point_xy', data.Properties.VariableNames);
+hasnonvol    = ismember('nonvolcanic_point_xy', data.Properties.VariableNames);
+
 
 for i = 1:height(data)
     fpath = string(data.path(i));
@@ -84,6 +72,22 @@ for i = 1:height(data)
                 legLabels(end+1)  = "Center";
             else
                 warning('Row %d: invalid image_center_xy; center not plotted.', i);
+            end
+        end
+    end
+
+    % Optional overlays: non volcanic
+    if show_center
+        if ~hasnonvol
+            warning('Row %d: "non vol position" not available; point not plotted.', i);
+        else
+            nvxy = data.nonvolcanic_point_xy(i,:);
+            if isnumeric(nvxy) && numel(nvxy)==2 && all(isfinite(nvxy))
+                h1 = plot(nvxy(1), nvxy(2), 'b+', 'MarkerSize', 12, 'LineWidth', 1.5);
+                legHandles(end+1) = h1; %#ok<AGROW>
+                legLabels(end+1)  = "non-volcanic point";
+            else
+                warning('Row %d: invalid non vulcanic xy; point not plotted.', i);
             end
         end
     end
