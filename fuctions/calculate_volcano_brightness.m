@@ -61,7 +61,7 @@ for i = 1:height(data)
         N1 = sum(M1(:));
         N2 = sum(M2(:));
 
-        data.volcano_brightness(i) = S1 %- S2 * N1 / N2;
+        data.volcano_brightness(i) = S1 - S2 * N1 / N2;
 
     catch ME
         warning('Row %d failed: %s', i, ME.message);

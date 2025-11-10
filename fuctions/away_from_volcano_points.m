@@ -31,8 +31,8 @@ function pts = away_from_volcano_points(center_xy, volcano_xy, N, min_dist)
         return;
     end
 
-    % --- Base vector: away from volcano ---
-    v = center_xy(:) - volcano_xy(:);   % column vector
+    % --- Base vector: towards volcano ---
+    v = - (center_xy(:) - volcano_xy(:));   % column vector
     d = sqrt(sum(v.^2));
 
     if d < eps
