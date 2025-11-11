@@ -9,6 +9,7 @@ colormapName            = 'parula';     % e.g., 'gray','parula','hot'
 clim                    = [NaN NaN];    % e.g., [0 1]; use [NaN NaN] for auto
 
 data_plot = data(8:end,:);
+data_plot = data(1:7,:);
 
 hasCenter    = ismember('image_center_xy', data_plot.Properties.VariableNames);
 hasBrightest = ismember('brightest_point_xy', data_plot.Properties.VariableNames);
