@@ -43,4 +43,4 @@ codegen/
 *.fits
 
 # Export Folder
-Export/
+Exports/
