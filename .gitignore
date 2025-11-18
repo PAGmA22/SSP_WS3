@@ -44,3 +44,5 @@ codegen/
 
 # Export Folder
 Exports/
+
+/spectral_data_export.txt

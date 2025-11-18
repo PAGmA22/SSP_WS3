@@ -1,4 +1,4 @@
-function data = calculate_volcano_brightness(data, R1, R2)
+function [data, masks] = calculate_volcano_brightness(data, R1, R2)
 %CALCULATE_VOLCANO_BRIGHTNESS Compute background-subtracted volcano brightness
 %
 %   data = calculate_volcano_brightness(data, R1, R2)
@@ -67,5 +67,7 @@ for i = 1:height(data)
         warning('Row %d failed: %s', i, ME.message);
         data.volcano_brightness(i) = NaN;
     end
+    %% return one mask (only for demonstration purpose)
+    masks = [M1,M2];
 end
 end
